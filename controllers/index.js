@@ -6,8 +6,8 @@ const REDIS_PORT = 6379;
 var Promise = require("bluebird");
 
 const redis = require("redis");
-
-const client = redis.createClient(process.env.REDIS_URL, {
+const REDIS_URL = "redis://:p1bc04bc3c57a5d721e94c516db7f568d082fbec616d1d6892334785bd47ca276@ec2-52-50-82-196.eu-west-1.compute.amazonaws.com:27519";
+const client = redis.createClient(REDIS_URL, {
     tls: {
         rejectUnauthorized: false
     }
