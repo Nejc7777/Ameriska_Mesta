@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+console.log("Environment variable: " + process.env.NODE_ENV);
+
 const REDIS_PORT = 6379;
 
 var Promise = require("bluebird");
