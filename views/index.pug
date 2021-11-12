@@ -1,0 +1,162 @@
+extends layout
+block content
+  h1= title
+  p Pozdravljeni na spletni strani #{title}
+  p(style='white-space:pre;')
+    | #[strong Navodila: ] Na drugem seznamu lahko izberete ali se naj seznam uredi padajoče ali naraščajoče,
+    | vendar je sprememba vidna šele po kliku na ime stolpca, po katerem se uredi tabelo.
+    | Stolpci po katerih se da urediti tabelo ob prehodu miške zasvetijo oranžno (vsi razen zemljepisne širine in višine).
+    | V primeru, da se mesta na začetku ne prikažejo osvežite stran.
+  p(id="opcije")
+    | Število prikazanih mest na strani!{' '}
+    select(id="selectID" onchange="prikaziSteviloMest()")
+      option(value=10) 10
+      option(value=20) 20
+      option(value=30) 30
+      option(value=40) 40
+      option(value=50) 50
+      option(value=100) 100
+      option(value=500) 500
+      option(value=1000 selected= true) 1000
+  p(id="opcijeSmer")
+    | Filtriranje (naraščajoče/padajoče)!{' '}
+    select(id="selectID2")
+      option(value="asc" selected= true) Naraščajoče
+      option(value="desc") Padajoče
+  .container(id="main")
+    table.table.table-striped(style='width:95%', border='1' id="tabela")
+      tr
+        th(onclick="sortirajImena()" id="imena") Ime
+        th(onclick="sortirajRast()" id="rast") Rast od 2000 do 2013
+        th Zemljepisna širina
+        th Zemljepisna dolžina
+        th(onclick="sortirajPopulacijo()" id="populacija") Populacija
+        th(onclick="sortirajLestvico()" id="lestvica") Mesto na lestvici največjih
+        th(onclick="sortirajDrzave()" id="zvDrzava") Zvezna država
+      for mesto in data
+        tr.vsebina
+          td= mesto.city
+          td= mesto.growth_from_2000_to_2013
+          td= mesto.latitude
+          td= mesto.longitude
+          td= mesto.population
+          td= mesto.rank
+          td= mesto.state
+  script.
+    document.getElementById("imena").addEventListener("mouseover", function (event) {
+      event.target.style.color = "orange";
+      setTimeout(function () {
+        event.target.style.color = "";
+      }, 200);
+    }, false);
+
+    document.getElementById("rast").addEventListener("mouseover", function (event) {
+      event.target.style.color = "orange";
+      setTimeout(function () {
+        event.target.style.color = "";
+      }, 200);
+    }, false);
+
+    document.getElementById("populacija").addEventListener("mouseover", function (event) {
+      event.target.style.color = "orange";
+      setTimeout(function () {
+        event.target.style.color = "";
+      }, 200);
+    }, false);
+
+    document.getElementById("lestvica").addEventListener("mouseover", function (event) {
+      event.target.style.color = "orange";
+      setTimeout(function () {
+        event.target.style.color = "";
+      }, 200);
+    }, false);
+
+    document.getElementById("zvDrzava").addEventListener("mouseover", function (event) {
+      event.target.style.color = "orange";
+      setTimeout(function () {
+        event.target.style.color = "";
+      }, 200);
+    }, false);
+
+    document.getElementById("zvDrzava").addEventListener("mouseover", function (event) {
+      event.target.style.color = "orange";
+      setTimeout(function () {
+        event.target.style.color = "";
+      }, 200);
+    }, false);
+
+    function prikaziSteviloMest() {
+      $('.vsebina').hide();
+      $('.vsebina').slice(0,$("#selectID").val()).show();
+      //alert($("#selectID").val())
+    }
+
+    function sortirajImena() {
+      $('.vsebina').show();
+      sortAlphabetic($('#tabela'), $("#selectID2").val(),1);
+      prikaziSteviloMest();
+    }
+
+    function sortirajRast() {
+      $('.vsebina').show();
+      sortNumeric($('#tabela'), $("#selectID2").val(), 2);
+      prikaziSteviloMest();
+    }
+
+    function sortirajPopulacijo() {
+      $('.vsebina').show();
+      sortNumeric($('#tabela'),$("#selectID2").val(), 5);
+      prikaziSteviloMest();
+    }
+
+    function sortirajLestvico() {
+      $('.vsebina').show();
+      sortNumeric($('#tabela'), $("#selectID2").val(), 6);
+      prikaziSteviloMest();
+    }
+
+    function sortirajDrzave() {
+      $('.vsebina').show();
+      sortAlphabetic($('#tabela'), $("#selectID2").val(), 7);
+      prikaziSteviloMest();
+    }
+
+    function sortNumeric(table, order, column) {
+      var asc = order === 'asc',
+              tbody = table.find('tbody');
+
+      tbody.find('tr.vsebina').sort(function (a, b) {
+        if (asc) {
+          return compareInts($('td:nth-child(' + column + ')', a).text(), $('td:nth-child(' + column + ')', b).text());
+        } else {
+          return compareInts($('td:nth-child(' + column + ')', b).text(), $('td:nth-child(' + column + ')', a).text());
+        }
+      }).appendTo(tbody);
+    }
+
+
+
+    function compareInts(a,b){
+      if(parseInt(a)>parseInt(b)){
+        return 1;
+      }
+      else if(parseInt(a)<parseInt(b)){
+        return -1;
+      }
+      else{
+        return 0;
+      }
+    }
+
+    function sortAlphabetic(table, order, column) {
+      var asc = order === 'asc',
+              tbody = table.find('tbody');
+
+      tbody.find('tr.vsebina').sort(function (a, b) {
+        if (asc) {
+          return $('td:nth-child(' + column + ')', a).text().localeCompare($('td:nth-child(' + column + ')', b).text());
+        } else {
+          return $('td:nth-child(' + column + ')', b).text().localeCompare($('td:nth-child(' + column + ')', a).text());
+        }
+      }).appendTo(tbody);
+    }
